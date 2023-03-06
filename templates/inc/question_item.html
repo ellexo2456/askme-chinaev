@@ -21,7 +21,7 @@
                  <div class="col-2">
                     <img src={% static 'img/caret-up-fill.svg' %} alt="" />
                     <img src={% static 'img/caret-down-fill.svg' %} alt="" />
-                    5
+                    {{ question.likes_count }}
                  </div>
                  <div class="col-4">
                     <a href={% url 'question' question_id=question.id %}>answers ({{ question.answers_number }})</a>

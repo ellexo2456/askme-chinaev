@@ -8,7 +8,11 @@ def index(request):
 
 
 def question(request, question_id: int):
-    return render(request, 'question.html')
+    context = {
+        'answers': models.ANSWERS,
+        'question': models.QUESTIONS[question_id - 1]
+    }
+    return render(request, 'question.html', context=context)
 
 
 def settings(request):
