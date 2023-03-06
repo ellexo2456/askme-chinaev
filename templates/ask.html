@@ -1,0 +1,33 @@
+{% extends 'inc/base.html' %}
+
+{% load static %}
+
+{% block content %}
+
+    <div class="header">
+        <h1>New question</h1>
+    </div>
+    <div class="col-8">
+        <div class="row me-1 mb-2">
+            <label for="TextareaTitle" class="col-form-label col-1">Title</label>
+            <textarea class="col-11 form-control-horizontal" id="TextareaTitle" rows="3">How to feed kotik?</textarea>
+        </div>
+        <div class="row me-1 mb-2">
+            <label for="TextareaText" class="col-form-label col-1">Text</label>
+            <textarea class="col-11 form-control-horizontal" id="TextareaText" rows="3" style="height: 300px">I`v tried but he only scratched me!</textarea>
+        </div>
+        <div class="row me-1 mb-2">
+            <label for="TextareaTags" class="col-form-label col-1">Tags</label>
+            <textarea class="col-11 form-control-horizontal" id="TextareaTags" rows="3">kotiks, feeding, painful</textarea>
+        </div>
+        <div class="row me-1 mb-2">
+            <div class="col-1">
+            </div>
+            <div class="col-10 p-0">
+                <button type="button" class="btn btn-outline-primary"><a style="all:unset" href={% url 'index' %}>ASK</a></button>
+            </div>
+        </div>
+
+    </div>
+
+{% endblock %}

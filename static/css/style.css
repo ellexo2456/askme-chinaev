@@ -1,0 +1,65 @@
+.profile {
+    box-sizing: border-box;
+    display: inline-flex;
+    align-items: center;
+    width: 200px;
+    margin-right: 20px;
+    color: #fbfbff;
+}
+
+.profile-info {
+    margin-left: 12px;
+}
+
+.list {
+    display: flex;
+    font-size: 13px;
+}
+
+.list a {
+    margin-right: 10px;
+}
+
+.container {
+    padding: 60px 15px 0;
+}
+
+.header {
+    display: inline-flex;
+    align-items: center;
+    box-sizing: border-box;
+    margin-bottom: 10px;
+}
+
+.header h1 {
+    margin-right: 20px;
+}
+
+.question {
+    margin-bottom: 20px;
+    border: 2px solid gray;
+    border-radius: 6px;
+    padding: 20px;
+}
+
+.avatar {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    overflow: hidden;
+}
+
+.avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.upload {
+    width: 150px;
+    height: 150px;
+    border-radius: 10%;
+    border-bottom-color: #1a1e21;
+    border: 2px;
+    /*overflow: hidden;*/
+}

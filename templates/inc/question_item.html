@@ -1,0 +1,36 @@
+{% load static %}
+
+<div class="question">
+        <div class="row">
+            <div class="col-2">
+                <div class="avatar">
+                    <img src={% static 'img/avatar-1.jpg' %} alt="" />
+                </div>
+            </div>
+            <div class="col-10">
+                <h2>
+                    <a href={% url 'question' question_id=question.id %}> {{ question.title }} </a>
+                </h2>
+                <div>
+                    {{ question.text }}
+                </div>
+            </div>
+        </div>
+        <div>
+             <div class="row mt-1">
+                 <div class="col-2">
+                    <img src={% static 'img/caret-up-fill.svg' %} alt="" />
+                    <img src={% static 'img/caret-down-fill.svg' %} alt="" />
+                    5
+                 </div>
+                 <div class="col-4">
+                    <a href={% url 'question' question_id=question.id %}>answers ({{ question.answers_number }})</a>
+                 </div>
+                 <div class="col-5">
+                    Tag:
+                    <a href={% url 'tag' %}>tag 1</a>
+                    <a href={% url 'tag' %}>tag 2</a>
+                 </div>
+             </div>
+        </div>
+    </div>
