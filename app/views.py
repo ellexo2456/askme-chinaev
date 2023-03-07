@@ -4,9 +4,10 @@ from django.http import HttpResponseNotFound
 
 from . import models
 
+ITEMS_COUNT_ON_PAGE = 10
 
 def get_paginator(request, page_items):
-    paginator = Paginator(page_items, 10)
+    paginator = Paginator(page_items, ITEMS_COUNT_ON_PAGE)
 
     page_number = request.GET.get('page')
     return paginator.get_page(page_number)
@@ -14,6 +15,8 @@ def get_paginator(request, page_items):
 
 def index(request):
     context = {'is_auth': False, 'page_obj': get_paginator(request, models.QUESTIONS)}
+    if request.GET.get('page') and int(request.GET.get('page')) > context['page_obj'].paginator.num_pages:
+        return HttpResponseNotFound()
     return render(request, 'index.html', context)
 
 
@@ -32,11 +35,17 @@ def settings(request):
 
 
 def hot(request):
-    return render(request, 'hot.html', {'page_obj': get_paginator(request, models.QUESTIONS)})
+    context = {'page_obj': get_paginator(request, models.QUESTIONS)}
+    if request.GET.get('page') and int(request.GET.get('page')) > context['page_obj'].paginator.num_pages:
+        return HttpResponseNotFound()
+    return render(request, 'hot.html', context)
 
 
 def tag(request):
-    return render(request, 'tag.html', {'page_obj': get_paginator(request, models.QUESTIONS)})
+    context = {'page_obj': get_paginator(request, models.QUESTIONS)}
+    if request.GET.get('page') and int(request.GET.get('page')) > context['page_obj'].paginator.num_pages:
+        return HttpResponseNotFound()
+    return render(request, 'tag.html', context)
 
 
 def ask(request):
