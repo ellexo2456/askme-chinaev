@@ -17,41 +17,51 @@
 <header>
     <!-- Fixed navbar -->
     <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
+
         <div class="container-fluid ">
+
             <a class="navbar-brand" href={% url 'index' %}>Ask Kotik</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+                    data-bs-target="#navbarCollapse" aria-controls="navbarCollapse"
+                    aria-expanded="false" aria-label="Toggle navigation">
+
                 <span class="navbar-toggler-icon"></span>
+
             </button>
-            <div class="collapse navbar-collapse" id="navbarCollapse">
-                <form class="d-flex" role="search">
+
+            <div class="collapse navbar-collapse ms-1" id="navbarCollapse">
+                <form class="d-flex me-2" role="search">
                     <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
                     <button class="btn btn-outline-success" type="submit">Search</button>
                 </form>
                 <div class="d-inline mx-2">
-                    <button type="button" class="btn btn-primary"><a style="all:unset" href={% url 'ask' %}>ASK</a></button>
-               </div>
+                    <button type="button" class="btn btn-primary"><a style="all:unset" href={% url 'ask' %}>ASK</a>
+                    </button>
+                </div>
             </div>
 
         </div>
 
         {% if is_auth %}
 
-        <div class="profile">
-            <div>
-                <a href="#">
-                    <img src={% static 'img/avatar-1.jpg' %} alt="avatar" width="40" height="40" class="rounded-circle">
-                </a>
-            </div>
-            <div class="profile-info">
+            <div class="profile">
                 <div>
-                    Mr. Kotik
+                    <a href="#">
+                        <img src={% static 'img/avatar-1.jpg' %} alt="avatar" width="40" height="40"
+                             class="rounded-circle">
+                    </a>
                 </div>
-                <div class="list">
-                    <a href="{% url 'settings' %}">settings</a>
-                    <a href="{% url 'index' %}">log out</a>
+                <div class="profile-info">
+                    <div>
+                        Mr. Kotik
+                    </div>
+                    <div class="list">
+                        <a href="{% url 'settings' %}">settings</a>
+                        <a href="{% url 'index' %}">log out</a>
+                    </div>
                 </div>
             </div>
-        </div>
 
         {% else %}
 
@@ -76,14 +86,14 @@
             <div class="col-4 mt-4">
                 <h2 class="me-2">Popular Tags</h2>
                 <div class="d-flex-inline flex-wrap mb-3">
-                        <span class="badge bg-black m-1">Some tag</span>
-                        <span class="badge bg-secondary m-1">Some tag</span>
-                        <span class="badge bg-warning m-1">Some tag</span>
-                        <span class="badge bg-secondary m-1">Some tag</span>
-                        <span class="badge bg-danger fs-6 w-50 p-2 m-1">Some big tag</span>
-                        <span class="badge bg-secondary m-1">Some tag</span>
-                        <span class="badge bg-secondary m-1">Some tag</span>
-                        <span class="badge bg-success m-1">Some green tag</span>
+                    <span class="badge bg-black m-1">Some tag</span>
+                    <span class="badge bg-secondary m-1">Some tag</span>
+                    <span class="badge bg-warning m-1">Some tag</span>
+                    <span class="badge bg-secondary m-1">Some tag</span>
+                    <span class="badge bg-danger fs-6 w-50 p-2 m-1">Some big tag</span>
+                    <span class="badge bg-secondary m-1">Some tag</span>
+                    <span class="badge bg-secondary m-1">Some tag</span>
+                    <span class="badge bg-success m-1">Some green tag</span>
                 </div>
                 <h2>Best Members</h2>
                 <div class="d-flex flex-column flex-wrap">
