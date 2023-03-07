@@ -33,6 +33,9 @@
             </div>
 
         </div>
+
+        {% if is_auth %}
+
         <div class="profile">
             <div>
                 <a href="#">
@@ -45,10 +48,19 @@
                 </div>
                 <div class="list">
                     <a href="{% url 'settings' %}">settings</a>
-                    <a href="index.html">log out</a>
+                    <a href="{% url 'index' %}">log out</a>
                 </div>
             </div>
         </div>
+
+        {% else %}
+
+            <div class="profile">
+                <a href="{% url 'login' %}" class="me-3"> login </a>
+                <a href="{% url 'register' %}"> register </a>
+            </div>
+
+        {% endif %}
     </nav>
 </header>
 
@@ -75,12 +87,12 @@
                 </div>
                 <h2>Best Members</h2>
                 <div class="d-flex flex-column flex-wrap">
-                    <a class="mb-2" href="index.html">Some member</a>
-                    <a class="mb-2" href="index.html">Some member</a>
-                    <a class="mb-2" href="index.html">Some member</a>
-                    <a class="mb-2" href="index.html">Some member</a>
-                    <a class="mb-2" href="index.html">Some member</a>
-                    <a class="mb-2" href="index.html">Some member</a>
+                    <a class="mb-2" href="{% url 'index' %}">Some member</a>
+                    <a class="mb-2" href="{% url 'index' %}">Some member</a>
+                    <a class="mb-2" href="{% url 'index' %}">Some member</a>
+                    <a class="mb-2" href="{% url 'index' %}">Some member</a>
+                    <a class="mb-2" href="{% url 'index' %}">Some member</a>
+                    <a class="mb-2" href="{% url 'index' %}">Some member</a>
                 </div>
             </div>
         </div>

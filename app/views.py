@@ -3,7 +3,7 @@ from . import models
 
 
 def index(request):
-    context = {'questions': models.QUESTIONS}
+    context = {'questions': models.QUESTIONS, 'is_auth': False}
     return render(request, 'index.html', context=context)
 
 
@@ -33,3 +33,13 @@ def ask(request):
     return render(request, 'ask.html')
 
 
+def ask(request):
+    return render(request, 'ask.html')
+
+
+def login(request):
+    return render(request, 'login.html')
+
+
+def register(request):
+    return render(request, 'register.html')
