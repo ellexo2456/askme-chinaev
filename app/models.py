@@ -7,7 +7,7 @@ QUESTIONS = [
         'text': f'Text of question {question_id}',
         'answers_number': question_id * question_id,
         'likes_count': question_id,
-    } for question_id in range(1, 10)
+    } for question_id in range(1, 100)
 ]
 
 ANSWERS = [

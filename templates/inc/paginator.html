@@ -1,27 +1,21 @@
 {% load static %}
 
-<ul class="pagination">
-    <li class="page-item"><a class="page-link" href="#">Previous</a></li>
-    <li class="page-item"><a class="page-link" href="#">1</a></li>
-    <li class="page-item"><a class="page-link" href="#">2</a></li>
-    <li class="page-item"><a class="page-link" href="#">3</a></li>
-    <li class="page-item"><a class="page-link" href="#">Next</a></li>
-</ul>
-
-<div class="pagination">
-    <span class="step-links">
+<div class="step-links mt-4 mb-5">
+    <ul class="pagination">
         {% if page_obj.has_previous %}
-            <a href="?page=1">&laquo; first</a>
-            <a href="?page={{ page_obj.previous_page_number }}">previous</a>
+            <li class="page-item"><a class="page-link" href="?page=1">&laquo; first</a></li>
+            <li class="page-item"><a class="page-link" href="?page={{ page_obj.previous_page_number }}">previous</a>
+            </li>
         {% endif %}
 
-        <span class="current">
+        <li class="current page-item disabled page-link">
             Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
-        </span>
+        </li>
 
         {% if page_obj.has_next %}
-            <a href="?page={{ page_obj.next_page_number }}">next</a>
-            <a href="?page={{ page_obj.paginator.num_pages }}">last &raquo;</a>
+            <li class="page-item"><a class="page-link" href="?page={{ page_obj.next_page_number }}">next</a></li>
+            <li class="page-item"><a class="page-link" href="?page={{ page_obj.paginator.num_pages }}">last &raquo;</a>
+            </li>
         {% endif %}
-    </span>
+    </ul>
 </div>

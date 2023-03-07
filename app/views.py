@@ -5,13 +5,15 @@ from django.http import HttpResponseNotFound
 from . import models
 
 
-def index(request):
-    paginator = Paginator(models.QUESTIONS, 5)
+def get_paginator(request, page_items):
+    paginator = Paginator(page_items, 10)
 
     page_number = request.GET.get('page')
-    page_obj = paginator.get_page(page_number)
+    return paginator.get_page(page_number)
 
-    context = {'is_auth': False, 'page_obj': page_obj}
+
+def index(request):
+    context = {'is_auth': False, 'page_obj': get_paginator(request, models.QUESTIONS)}
     return render(request, 'index.html', context)
 
 
@@ -30,17 +32,11 @@ def settings(request):
 
 
 def hot(request):
-    context = {'questions': models.QUESTIONS}
-    return render(request, 'hot.html', context=context)
+    return render(request, 'hot.html', {'page_obj': get_paginator(request, models.QUESTIONS)})
 
 
 def tag(request):
-    context = {'questions': models.QUESTIONS}
-    return render(request, 'tag.html', context=context)
-
-
-def ask(request):
-    return render(request, 'ask.html')
+    return render(request, 'tag.html', {'page_obj': get_paginator(request, models.QUESTIONS)})
 
 
 def ask(request):
