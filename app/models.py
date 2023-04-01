@@ -17,16 +17,17 @@ class Question(models.Model):
     title = models.CharField(max_length=60)
     text = models.TextField()
     aks_date = models.DateField(auto_now_add=True)
-    correct_answer = models.OneToOneField(to='Answer',
-                                          on_delete=models.SET_NULL,
-                                          null=True,
-                                          blank=True)
+    # correct_answer = models.OneToOneField(to='Answer',
+    #                                       on_delete=models.SET_NULL,
+    #                                       null=True,
+    #                                       blank=True)
     profile = models.ForeignKey(to=Profile, on_delete=models.CASCADE)
     tags = models.ManyToManyField(to=Tag)
 
 
 class Answer(models.Model):
     text = models.TextField()
+    correct = models.BooleanField(default=False)
     aks_date = models.DateField(auto_now_add=True)
     profile = models.ForeignKey(to=Profile, on_delete=models.CASCADE)
     question = models.ForeignKey(to=Question, on_delete=models.CASCADE)
