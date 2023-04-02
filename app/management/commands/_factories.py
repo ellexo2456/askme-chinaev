@@ -17,7 +17,6 @@ class QuestionFactory(DjangoModelFactory):
     title = factory.Faker('text', max_nb_chars=60)
     text = factory.Faker('text')
     ask_date = factory.Faker('date_this_year')
-    correct_answer = factory.SubFactory('AnswerFactory', question=)
     profile = factory.SubFactory(ProfileFactory)
 
     @factory.post_generation
