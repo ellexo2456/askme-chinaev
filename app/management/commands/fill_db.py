@@ -2,10 +2,10 @@ from app.models import Profile, Question, Answer, Tag, Like
 
 from django.core.management.base import BaseCommand, CommandError
 from django.db import transaction
-from _factories import (
+from app.management.commands._factories import (
     TagFactory,
-    ProfileFactory,
     QuestionFactory,
+    ProfileFactory,
     AnswerFactory,
     LikeFactory
 )
@@ -27,16 +27,14 @@ class Command(BaseCommand):
 
         ratio = options['ratio']
 
-        profiles = [Profile() for _ in range(ratio)]
-        Profile.objects.bulk_create(profiles)
+        profiles = Profile.objects.bulk_create(Profile() for _ in range(ratio))
 
-        tags = [TagFactory for _ in range(ratio)]
-        Tag.objects.bulk_create(tags)
+        tags = Tag.objects.bulk_create(TagFactory() for _ in range(ratio))
 
         questions = []
         for _ in range(ratio * 10):
-            question = QuestionFactory(profile=random.choices(profiles))
-            question.tags(random.choices(tags, k=random.choice([1, 2, 3])))
+            question = QuestionFactory(profile=random.choice(profiles),
+                                       tags=random.choices(tags, k=random.choice([1, 2, 3])))
             questions.append(question)
         Question.objects.bulk_create(questions)
 
@@ -56,4 +54,3 @@ class Command(BaseCommand):
             )
             likes.append(like)
         Like.objects.bulk_create(likes)
-
