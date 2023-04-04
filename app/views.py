@@ -6,6 +6,7 @@ from . import models
 
 ITEMS_COUNT_ON_PAGE = 10
 
+
 def get_paginator(request, page_items):
     paginator = Paginator(page_items, ITEMS_COUNT_ON_PAGE)
 
