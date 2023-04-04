@@ -18,24 +18,35 @@ class QuestionManager(models.Manager):
         return self.order_by('ask_date').filter(id__range=(begin, end))
 
 
+
+    def butch_by_data(self, begin, end):
+        return self.order_by('ask_date').filter(id__range=(begin, end))
+
+
 class Question(models.Model):
     title = models.CharField(max_length=60)
     text = models.TextField()
-    aks_date = models.DateField(auto_now_add=True)
-    # correct_answer = models.OneToOneField(to='Answer',
-    #                                       on_delete=models.SET_NULL,
-    #                                       null=True,
-    #                                       blank=True)
+    ask_date = models.DateTimeField(auto_now_add=True)
     profile = models.ForeignKey(to=Profile, on_delete=models.CASCADE)
     tags = models.ManyToManyField(to=Tag)
+
+
+class AnswerManager(models.Manager):
+    def answer_count(self, question_id):
+        return self.count.filter(question_id=question_id)
 
 
 class Answer(models.Model):
     text = models.TextField()
     correct = models.BooleanField(default=False)
-    aks_date = models.DateField(auto_now_add=True)
+    ask_date = models.DateTimeField(auto_now_add=True)
     profile = models.ForeignKey(to=Profile, on_delete=models.CASCADE)
     question = models.ForeignKey(to=Question, on_delete=models.CASCADE)
+
+
+class LikeManager(models.Manager):
+    def likes_count(self, question_id):
+        return self.count.filter(question_id=question_id)
 
 
 class Like(models.Model):
