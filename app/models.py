@@ -13,14 +13,10 @@ class Tag(models.Model):
     name = models.CharField(max_length=100)
 
 
-class QuestionManager(models.Manager):
-    def butch_by_data(self, begin, end):
-        return self.order_by('ask_date').filter(id__range=(begin, end))
-
-
-
-    def butch_by_data(self, begin, end):
-        return self.order_by('ask_date').filter(id__range=(begin, end))
+# class QuestionManager(models.Manager):
+#     def butch_by_data(self, begin, end):
+#         return self.filter(id__range=(begin, end))
+#
 
 
 class Question(models.Model):
