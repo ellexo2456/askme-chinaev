@@ -9,10 +9,10 @@
             </div>
             <div class="col-10">
                 <h2>
-                    <a href={% url 'question' question_id=question.id %}> {{ question.title }} </a>
+                    <a href={% url 'question' question_id=question.0.id %}> {{ question.0.title }} </a>
                 </h2>
                 <div>
-                    {{ question.text }}
+                    {{ question.0.text }}
                 </div>
             </div>
         </div>
@@ -21,15 +21,16 @@
                  <div class="col-2">
                     <img src={% static 'img/caret-up-fill.svg' %} alt="" />
                     <img src={% static 'img/caret-down-fill.svg' %} alt="" />
-                    {{ question.likes_count }}
+                    {{ question.1 }}
                  </div>
                  <div class="col-4">
-                    <a href={% url 'question' question_id=question.id %}>answers ({{ question.answers_number }})</a>
+                    <a href={% url 'question' question_id=question.0.id %}>answers ({{ question.2 }})</a>
                  </div>
                  <div class="col-5">
                     Tag:
-                    <a href={% url 'tag' %}>tag 1</a>
-                    <a href={% url 'tag' %}>tag 2</a>
+                     {% for tag in question.3 %}
+                         <a href={% url 'tag' tag_id=tag.id %}> {{ tag.name }}</a>
+                     {% endfor %}
                  </div>
              </div>
         </div>

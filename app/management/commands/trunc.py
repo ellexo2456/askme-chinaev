@@ -14,5 +14,3 @@ class Command(BaseCommand):
         for m in models:
             m.objects.all().delete()
 
-        management.call_command('sqlsequencereset', app_label='app',
-                                stdout=management.call_command('dbshell'))

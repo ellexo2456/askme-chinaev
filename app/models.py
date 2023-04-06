@@ -14,11 +14,12 @@ class Tag(models.Model):
 
 
 # class QuestionManager(models.Manager):
-#     def butch_by_data(self, begin, end):
-#         return self.filter(id__range=(begin, end))
+#     def new_with_counts(self):
 #
-
-
+#
+#         return questions_with_counts
+#
+#
 class Question(models.Model):
     title = models.CharField(max_length=60)
     text = models.TextField()
@@ -26,10 +27,12 @@ class Question(models.Model):
     profile = models.ForeignKey(to=Profile, on_delete=models.CASCADE)
     tags = models.ManyToManyField(to=Tag)
 
+    # objects = QuestionManager
+
 
 class AnswerManager(models.Manager):
-    def answer_count(self, question_id):
-        return self.count.filter(question_id=question_id)
+    def answers_count(self, question_id):
+        return self.filter(question_id=question_id).count()
 
 
 class Answer(models.Model):
@@ -39,10 +42,12 @@ class Answer(models.Model):
     profile = models.ForeignKey(to=Profile, on_delete=models.CASCADE)
     question = models.ForeignKey(to=Question, on_delete=models.CASCADE)
 
+    objects = AnswerManager()
+
 
 class LikeManager(models.Manager):
     def likes_count(self, question_id):
-        return self.count.filter(question_id=question_id)
+        return self.filter(question_id=question_id).count()
 
 
 class Like(models.Model):
@@ -62,6 +67,35 @@ class Like(models.Model):
                                null=True,
                                blank=True)
     profile = models.ForeignKey(to=Profile, on_delete=models.CASCADE)
+
+    objects = LikeManager()
+
+
+def new_questions():
+    return Question.objects.order_by('ask_date')
+
+
+def tag_questions(tag_id):
+    return Question.objects.filter(tags__id=tag_id)
+
+
+def get_questions(get, tag_id=None):
+    try:
+        questions = get() if tag_id is None else get(tag_id)
+    except TypeError as e:
+        print('Error with getting question: ', e)
+        return
+
+    questions_with_counts = []
+
+    for q in questions:
+        questions_with_counts.append(
+            [q,
+             Answer.objects.answers_count(q.id),
+             Like.objects.likes_count(q.id),
+             q.tags.all()])
+
+    return questions_with_counts
 
 
 QUESTIONS = [

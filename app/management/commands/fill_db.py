@@ -33,10 +33,9 @@ class Command(BaseCommand):
 
         questions = []
         for _ in range(ratio * 10):
-            question = QuestionFactory(profile=random.choice(profiles),
-                                       tags=random.choices(tags, k=random.choice([1, 2, 3])))
+            question = QuestionFactory.create(profile=random.choice(profiles),
+                                              tags=random.choices(tags, k=random.choice([1, 2, 3])))
             questions.append(question)
-        Question.objects.bulk_create(questions)
 
         answers = [AnswerFactory(
             profile=random.choice(profiles),

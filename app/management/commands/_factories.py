@@ -23,10 +23,11 @@ class QuestionFactory(DjangoModelFactory):
 
     @factory.post_generation
     def tags(self, create, extracted, **kwargs):
-        if not create or not extracted:
-            return
-
-        self.tags.add(*extracted)
+        # print(*extracted, '\n\n\n')
+        try:
+            self.tags.add(*extracted)
+        except ValueError:
+            print("Can`t fill ManyToMany rel Question-Tag")
 
 
 class AnswerFactory(DjangoModelFactory):
