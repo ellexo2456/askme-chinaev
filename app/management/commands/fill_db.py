@@ -27,7 +27,7 @@ class Command(BaseCommand):
 
         ratio = options['ratio']
 
-        profiles = Profile.objects.bulk_create(Profile() for _ in range(ratio))
+        profiles = Profile.objects.bulk_create(ProfileFactory() for _ in range(ratio))
 
         tags = Tag.objects.bulk_create(TagFactory() for _ in range(ratio))
 

@@ -10,6 +10,8 @@ class ProfileFactory(DjangoModelFactory):
         model = models.Profile
         strategy = factory.BUILD_STRATEGY
 
+    avatar = factory.django.ImageField(from_path='static/img/avatar-3.jpg')
+
 
 class QuestionFactory(DjangoModelFactory):
     class Meta:
@@ -18,12 +20,10 @@ class QuestionFactory(DjangoModelFactory):
 
     title = factory.Faker('text', max_nb_chars=60)
     text = factory.Faker('text')
-    # ask_date = factory.Faker('date_this_year')
     profile = factory.SubFactory(ProfileFactory)
 
     @factory.post_generation
     def tags(self, create, extracted, **kwargs):
-        # print(*extracted, '\n\n\n')
         try:
             self.tags.add(*extracted)
         except ValueError:
@@ -36,7 +36,6 @@ class AnswerFactory(DjangoModelFactory):
         strategy = factory.BUILD_STRATEGY
 
     text = factory.Faker('text')
-    # ask_date = factory.Faker('date_this_year')
     profile = factory.SubFactory(ProfileFactory)
     question = factory.SubFactory(QuestionFactory)
 
