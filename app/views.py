@@ -44,10 +44,10 @@ def hot(request):
 
 
 def tag(request, tag_id: int):
-    context = {'page_obj': get_paginator(request, models.get_questions(models.tag_questions, tag_id)),
-               'tag_name': models.Tag.objects.get(id=tag_id).name}
-
-    if context['page_obj'].paginator.count == 0:
+    try:
+        context = {'page_obj': get_paginator(request, models.get_questions(models.tag_questions, tag_id)),
+                   'tag_name': models.Tag.objects.get(id=tag_id).name}
+    except (models.Tag.DoesNotExist, models.Tag.MultipleObjectsReturned):
         return HttpResponseNotFound()
 
     context['tag_count'] = context['page_obj'].paginator.count
