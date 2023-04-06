@@ -23,12 +23,12 @@ def index(request):
 
 
 def question(request, question_id: int):
-    if len(models.QUESTIONS) < question_id:
+    try:
+        context = {'answers': models.get_answers(question_id),
+                   'question': models.get_question_with_counts(question_id)}
+    except (models.Question.DoesNotExist, models.Question.MultipleObjectsReturned):
         return HttpResponseNotFound()
-    context = {
-        'answers': models.ANSWERS,
-        'question': models.QUESTIONS[question_id - 1]
-    }
+
     return render(request, 'question.html', context=context)
 
 
@@ -37,9 +37,11 @@ def settings(request):
 
 
 def hot(request):
-    context = {'page_obj': get_paginator(request, models.QUESTIONS)}
+    context = {'page_obj': get_paginator(request, models.get_hot_questions())}
+
     if request.GET.get('page') and int(request.GET.get('page')) > context['page_obj'].paginator.num_pages:
         return HttpResponseNotFound()
+
     return render(request, 'hot.html', context)
 
 

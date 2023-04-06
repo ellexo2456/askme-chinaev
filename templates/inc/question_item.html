@@ -21,10 +21,10 @@
                  <div class="col-2">
                     <img src={% static 'img/caret-up-fill.svg' %} alt="" />
                     <img src={% static 'img/caret-down-fill.svg' %} alt="" />
-                    {{ question.1 }}
+                    {{ question.2 }}
                  </div>
                  <div class="col-4">
-                    <a href={% url 'question' question_id=question.0.id %}>answers ({{ question.2 }})</a>
+                    <a href={% url 'question' question_id=question.0.id %}>answers ({{ question.1 }})</a>
                  </div>
                  <div class="col-5">
                     Tag:
