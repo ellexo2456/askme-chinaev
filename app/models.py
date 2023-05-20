@@ -31,7 +31,7 @@ class Answer(models.Model):
     correct = models.BooleanField(default=False)
     ask_date = models.DateTimeField(auto_now_add=True)
     profile = models.ForeignKey(to=Profile, on_delete=models.CASCADE)
-    question = models.ForeignKey(to=Question, on_delete=models.CASCADE)
+    question = models.ForeignKey(to=Question, on_delete=models.CASCADE, related_name='answers')
 
     objects = AnswerManager()
 
