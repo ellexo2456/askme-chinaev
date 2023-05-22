@@ -15,8 +15,11 @@ def get_paginator(request, page_items):
 
 
 def index(request):
+    # context = {'is_auth': False,
+    #            'page_obj': get_paginator(request, models.get_questions(models.new_questions))}
     context = {'is_auth': False,
-               'page_obj': get_paginator(request, models.get_questions(models.new_questions))}
+               'page_obj': get_paginator(request, models.Question.objects.order_by_date())}
+
     if request.GET.get('page') and int(request.GET.get('page')) > context['page_obj'].paginator.num_pages:
         return HttpResponseNotFound()
     return render(request, 'index.html', context)
@@ -24,8 +27,9 @@ def index(request):
 
 def question(request, question_id: int):
     try:
-        context = {'answers': models.get_answers(question_id),
-                   'question': models.get_question_with_counts(question_id)}
+        question_item = models.Question.objects.get_by_id(id)
+        context = {'question': question_item,
+                   'page_obj': models.Answer.objects.get_answers(question_item)}
     except (models.Question.DoesNotExist, models.Question.MultipleObjectsReturned):
         return HttpResponseNotFound()
 
@@ -37,7 +41,7 @@ def settings(request):
 
 
 def hot(request):
-    context = {'page_obj': get_paginator(request, models.get_hot_questions())}
+    context = {'page_obj': get_paginator(request, models.Question.objects.order_by_rating())}
 
     if request.GET.get('page') and int(request.GET.get('page')) > context['page_obj'].paginator.num_pages:
         return HttpResponseNotFound()
@@ -45,19 +49,30 @@ def hot(request):
     return render(request, 'hot.html', context)
 
 
-def tag(request, tag_id: int):
-    try:
-        context = {'page_obj': get_paginator(request, models.get_questions(models.tag_questions, tag_id)),
-                   'tag_name': models.Tag.objects.get(id=tag_id).name}
-    except (models.Tag.DoesNotExist, models.Tag.MultipleObjectsReturned):
+def tag_page(request, tag_name: str):
+    if not models.Tag.objects.filter(name=tag_name).exists():
         return HttpResponseNotFound()
 
-    context['tag_count'] = context['page_obj'].paginator.count
+    context = {'page_obj': get_paginator(request, models.Question.objects.get_by_tag(tag_name)),
+               'tag_name': tag_name}
+    return render(request, "tag.html", context=context)
 
-    if request.GET.get('page') and int(request.GET.get('page')) > context['page_obj'].paginator.num_pages:
-        return HttpResponseNotFound()
-
-    return render(request, 'tag.html', context)
+# def tag(request, tag_id: int):
+#     # if not models.Tag.objects.filter(name=tag_name).exists():
+#     #     return render(request, "page404.html", status=404)
+#
+#     try:
+#         context = {'page_obj': get_paginator(request, models.get_questions(models.tag_questions, tag_id)),
+#                    'tag_name': models.Tag.objects.get(id=tag_id).name}
+#     except (models.Tag.DoesNotExist, models.Tag.MultipleObjectsReturned):
+#         return HttpResponseNotFound()
+#
+#     context['tag_count'] = context['page_obj'].paginator.count
+#
+#     if request.GET.get('page') and int(request.GET.get('page')) > context['page_obj'].paginator.num_pages:
+#         return HttpResponseNotFound()
+#
+#     return render(request, 'tag.html', context)
 
 
 def ask(request):
