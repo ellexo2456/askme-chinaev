@@ -4,12 +4,12 @@
     <div class="row">
         <div class="col-2">
             <div class="avatar">
-                <img src='{{ answer.0.profile.avatar.url }}' alt=""/>
+                <img src='{{ answer.profile.avatar.url }}' alt=""/>
             </div>
         </div>
         <div class="col-10">
             <div>
-                {{ answer.0.text }}
+                {{ answer.text }}
             </div>
         </div>
     </div>
@@ -18,7 +18,7 @@
             <div class="col-2">
                 <img src={% static 'img/caret-up-fill.svg' %} alt=""/>
                 <img src={% static 'img/caret-down-fill.svg' %} alt=""/>
-                {{ answer.1 }}
+                {{ answer.rating }}
             </div>
             <div class="form-check ms-3 col">
                 <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">

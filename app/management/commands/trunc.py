@@ -1,4 +1,4 @@
-from app.models import Profile, Question, Answer, Tag, Like
+from app.models import Profile, Question, Answer, Tag, AnswerLike, QuestionLike
 
 from django.core.management.base import BaseCommand, CommandError
 from django.db import transaction
@@ -10,7 +10,6 @@ class Command(BaseCommand):
 
     @transaction.atomic
     def handle(self, *args, **options):
-        models = [Profile, Question, Answer, Tag, Like]
+        models = [Profile, Question, Answer, Tag, AnswerLike, QuestionLike]
         for m in models:
             m.objects.all().delete()
-

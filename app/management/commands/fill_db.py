@@ -1,4 +1,4 @@
-from app.models import Profile, Question, Answer, Tag, Like
+from app.models import Profile, Question, Answer, Tag, AnswerLike, QuestionLike
 
 from django.core.management.base import BaseCommand, CommandError
 from django.db import transaction
@@ -7,7 +7,8 @@ from app.management.commands._factories import (
     QuestionFactory,
     ProfileFactory,
     AnswerFactory,
-    LikeFactory
+    QuestionLikeFactory,
+    AnswerLikeFactory
 )
 
 import random
@@ -21,7 +22,7 @@ class Command(BaseCommand):
 
     @transaction.atomic
     def handle(self, *args, **options):
-        models = [Profile, Question, Answer, Tag, Like]
+        models = [Profile, Question, Answer, Tag, AnswerLike, QuestionLike]
         for m in models:
             m.objects.all().delete()
 
@@ -43,13 +44,20 @@ class Command(BaseCommand):
         ) for _ in range(ratio * 100)]
         Answer.objects.bulk_create(answers)
 
-        likes = []
-        for _ in range(ratio * 200):
-            flag = random.choice([True, False])
-            like = LikeFactory(
+        answers_likes = []
+        for _ in range(ratio * 100):
+            answer_like = AnswerLikeFactory(
                 profile=random.choice(profiles),
-                question=random.choice(questions) if flag else None,
-                answer=random.choice(answers) if not flag else None
+                answer=random.choice(answers)
             )
-            likes.append(like)
-        Like.objects.bulk_create(likes)
+            answers_likes.append(answer_like)
+        AnswerLike.objects.bulk_create(answers_likes)
+
+        questions_likes = []
+        for _ in range(ratio * 100):
+            question_like = QuestionLikeFactory(
+                profile=random.choice(profiles),
+                question=random.choice(questions)
+            )
+            questions_likes.append(question_like)
+        QuestionLike.objects.bulk_create(questions_likes)

@@ -26,10 +26,13 @@ def index(request):
 
 
 def question(request, question_id: int):
+    if (not models.Question.objects.filter(id=question_id).exists()) or question_id < 0:
+        return HttpResponseNotFound()
+
     try:
-        question_item = models.Question.objects.get_by_id(id)
+        question_item = models.Question.objects.get_by_id(question_id)
         context = {'question': question_item,
-                   'page_obj': models.Answer.objects.get_answers(question_item)}
+                   'page_obj': get_paginator(request, models.Answer.objects.get_answers(question_item))}
     except (models.Question.DoesNotExist, models.Question.MultipleObjectsReturned):
         return HttpResponseNotFound()
 
@@ -50,7 +53,8 @@ def hot(request):
 
 
 def tag(request, tag_name: str):
-    if not models.Tag.objects.filter(name=tag_name).exists():
+    current_tag = models.Tag.objects.filter(name=tag_name)
+    if not current_tag.exists():
         return HttpResponseNotFound()
 
     context = {'page_obj': get_paginator(request, models.Question.objects.get_by_tag(tag_name)),

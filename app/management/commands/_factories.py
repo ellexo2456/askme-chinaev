@@ -21,8 +21,8 @@ class QuestionFactory(DjangoModelFactory):
     title = factory.Faker('text', max_nb_chars=60)
     text = factory.Faker('text')
     profile = factory.SubFactory(ProfileFactory)
-    answers_count = factory.Faker('number')
-    rating = factory.Faker('number')
+    answers_count = factory.Faker('random_int', max=100)
+    rating = factory.Faker('random_int', max=100)
 
     @factory.post_generation
     def tags(self, create, extracted, **kwargs):
@@ -40,7 +40,7 @@ class AnswerFactory(DjangoModelFactory):
     text = factory.Faker('text')
     profile = factory.SubFactory(ProfileFactory)
     question = factory.SubFactory(QuestionFactory)
-    rating = factory.Faker('number')
+    rating = factory.Faker('random_int', max=100)
 
 
 class TagFactory(DjangoModelFactory):
@@ -49,15 +49,25 @@ class TagFactory(DjangoModelFactory):
         strategy = factory.BUILD_STRATEGY
 
     name = factory.Faker('word')
-    count = factory.Faker('number')
+    count = factory.Faker('random_int', max=100)
 
 
-class LikeFactory(DjangoModelFactory):
+class QuestionLikeFactory(DjangoModelFactory):
     class Meta:
-        model = models.Like
+        model = models.QuestionLike
         strategy = factory.BUILD_STRATEGY
 
-    estimation = random.choice(['L', 'D'])
     question = factory.SubFactory(QuestionFactory)
+    profile = factory.SubFactory(ProfileFactory)
+    is_like = factory.Faker('boolean')
+
+
+class AnswerLikeFactory(DjangoModelFactory):
+    class Meta:
+        model = models.AnswerLike
+        strategy = factory.BUILD_STRATEGY
+
     answer = factory.SubFactory(AnswerFactory)
     profile = factory.SubFactory(ProfileFactory)
+    is_like = factory.Faker('boolean')
+
