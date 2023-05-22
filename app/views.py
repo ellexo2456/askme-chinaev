@@ -49,7 +49,7 @@ def hot(request):
     return render(request, 'hot.html', context)
 
 
-def tag_page(request, tag_name: str):
+def tag(request, tag_name: str):
     if not models.Tag.objects.filter(name=tag_name).exists():
         return HttpResponseNotFound()
 

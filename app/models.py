@@ -16,9 +16,9 @@ class TagManager(models.Manager):
 
 class Tag(models.Model):
     name = models.CharField(max_length=100)
-    count = models.IntegerField(default=0)  #
+    count = models.IntegerField(default=0)
 
-    object = TagManager()
+    objects = TagManager()
 
 
 class QuestionManager(models.Manager):
@@ -44,7 +44,7 @@ class Question(models.Model):
     answers_count = models.IntegerField(default=0) #
     rating = models.IntegerField(default=0) #
 
-    object = QuestionManager()
+    objects = QuestionManager()
 
 
 class AnswerManager(models.Manager):

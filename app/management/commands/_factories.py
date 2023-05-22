@@ -21,6 +21,8 @@ class QuestionFactory(DjangoModelFactory):
     title = factory.Faker('text', max_nb_chars=60)
     text = factory.Faker('text')
     profile = factory.SubFactory(ProfileFactory)
+    answers_count = factory.Faker('number')
+    rating = factory.Faker('number')
 
     @factory.post_generation
     def tags(self, create, extracted, **kwargs):
@@ -38,6 +40,7 @@ class AnswerFactory(DjangoModelFactory):
     text = factory.Faker('text')
     profile = factory.SubFactory(ProfileFactory)
     question = factory.SubFactory(QuestionFactory)
+    rating = factory.Faker('number')
 
 
 class TagFactory(DjangoModelFactory):
@@ -46,6 +49,7 @@ class TagFactory(DjangoModelFactory):
         strategy = factory.BUILD_STRATEGY
 
     name = factory.Faker('word')
+    count = factory.Faker('number')
 
 
 class LikeFactory(DjangoModelFactory):
