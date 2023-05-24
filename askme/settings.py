@@ -37,7 +37,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'app'
+    'app',
+    'bootstrap5'
 ]
 
 MIDDLEWARE = [
@@ -131,3 +132,5 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 MEDIA_ROOT = '/Users/aleksej/Projects/askme_chinaev/static/img'
 MEDIA_URL = 'img/'
+
+REDIRECT_FIELD_NAME = "continue"

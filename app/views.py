@@ -1,8 +1,18 @@
 from django.core.paginator import Paginator
-from django.shortcuts import render
-from django.http import HttpResponseNotFound
+
+from django.conf import Settings
+from django.db import IntegrityError
+from django.forms import model_to_dict
+from django.shortcuts import redirect, render
+from django.http import HttpResponse, HttpResponseNotFound, HttpResponseRedirect
+from django.urls import reverse
+from django.views.decorators.http import require_GET
+from app import forms
+from django.contrib.auth.decorators import login_required
+from django.contrib import auth
 
 from . import models
+from askme import settings
 
 ITEMS_COUNT_ON_PAGE = 10
 
@@ -14,6 +24,7 @@ def get_paginator(request, page_items):
     return paginator.get_page(page_number)
 
 
+@login_required(login_url="login")
 def index(request):
     # context = {'is_auth': False,
     #            'page_obj': get_paginator(request, models.get_questions(models.new_questions))}
@@ -39,10 +50,6 @@ def question(request, question_id: int):
     return render(request, 'question.html', context=context)
 
 
-def settings(request):
-    return render(request, 'settings.html')
-
-
 def hot(request):
     context = {'page_obj': get_paginator(request, models.Question.objects.order_by_rating())}
 
@@ -61,31 +68,50 @@ def tag(request, tag_name: str):
                'tag_name': tag_name}
     return render(request, "tag.html", context=context)
 
-# def tag(request, tag_id: int):
-#     # if not models.Tag.objects.filter(name=tag_name).exists():
-#     #     return render(request, "page404.html", status=404)
-#
-#     try:
-#         context = {'page_obj': get_paginator(request, models.get_questions(models.tag_questions, tag_id)),
-#                    'tag_name': models.Tag.objects.get(id=tag_id).name}
-#     except (models.Tag.DoesNotExist, models.Tag.MultipleObjectsReturned):
-#         return HttpResponseNotFound()
-#
-#     context['tag_count'] = context['page_obj'].paginator.count
-#
-#     if request.GET.get('page') and int(request.GET.get('page')) > context['page_obj'].paginator.num_pages:
-#         return HttpResponseNotFound()
-#
-#     return render(request, 'tag.html', context)
 
-
+@login_required(login_url="login", redirect_field_name=settings.REDIRECT_FIELD_NAME)
 def ask(request):
     return render(request, 'ask.html')
 
 
+# def login(request):
+#     return render(request, 'login.html')
+
+
 def login(request):
-    return render(request, 'login.html')
+    if request.method == 'GET':
+        if request.user.is_authenticated:
+            print("request.GET 1 = ", request.GET)
+            url = request.GET.get('continue', '/')
+            # if not url:
+            #     url = '/'
+            return HttpResponseRedirect(url)
+        login_form = forms.LoginForm()
+        print("request.GET 2 = ", request.GET)
+    elif request.method == 'POST':
+        login_form = forms.LoginForm(request.POST)
+        if login_form.is_valid():
+            user = auth.authenticate(request, **login_form.cleaned_data)
+            if user:
+                auth.login(request, user)
+                print("request.POST = ", request.POST)
+                print("request.POST_GET = ", request.GET)
+                # return HttpResponseRedirect(reverse(viewname="register", kwargs={'continue' : '/'}))
+
+                return redirect(reverse(viewname="login") + "?continue=" + request.GET.get('continue', '/'))
+            else:
+                login_form.add_error(None, "Username or password is incorrect")
+    # context = {'best_items': get_best_items(), 'form': login_form}
+    context = {'form': login_form}
+
+    return render(request, "login.html", context=context)
+
 
 
 def register(request):
     return render(request, 'register.html')
+
+
+@login_required(login_url="login", redirect_field_name=settings.REDIRECT_FIELD_NAME)
+def settings(request):
+    return render(request, 'settings.html')

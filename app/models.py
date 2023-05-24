@@ -2,11 +2,12 @@ from django.db import models
 from django.contrib.auth.models import User
 
 
+# user's pass: tr12345
 class Profile(models.Model):
     avatar = models.ImageField(upload_to='avatars',
                                null=True,
                                blank=True)
-    # user = models.OneToOneField(to=User, on_delete=models.CASCADE)
+    user = models.OneToOneField(User, on_delete=models.CASCADE, null=False)
 
 
 class TagManager(models.Manager):

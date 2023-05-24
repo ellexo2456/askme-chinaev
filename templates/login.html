@@ -1,6 +1,8 @@
 {% extends 'inc/base.html' %}
 
 {% load static %}
+{% load bootstrap5 %}
+{% bootstrap_messages %}
 
 {% block content %}
 
@@ -8,34 +10,27 @@
         <h1>Log in</h1>
     </div>
 
-    <div class="row">
+    <form action="{% url 'login' %}?continue={{ request.GET.continue }}" method="post" class="form">
+        {% csrf_token %}
+        {% bootstrap_form form %}
+        {% buttons %}
+            <button type="submit" class="btn btn-primary">Log in!</button>
+            <a type="button" href="{% url 'register' %}" style="color: #0d6efdd9"
+               class="mx-2 px-3 btn btn-outline-light">Create new account</a>
+        {% endbuttons %}
+    </form>
 
-        <div class="col-8">
-            <div class="alert alert-danger" role="alert">
-                Sorry, wrong password!
-            </div>
-            <div class="row me-1 mb-2">
-                <label for="inputEmail" class="col-2 col-form-label">Login</label>
-                <div class="col-10">
-                    <input type="email" class="col-form-control" id="inputEmail" placeholder="email@mail.ru">
-                </div>
-            </div>
-            <div class="row me-1 mb-2">
-                <label for="inputPassword" class="col-2 col-form-label">Password</label>
-                <div class="col-10">
-                    <input type="password" class="col-form-control" id="inputPassword" placeholder="············">
-                </div>
-            </div>
-            <div class="row me-1 my-3">
-                <div class="col-2">
-                </div>
-                <div class="col-10">
-                    <button onclick="window.location.href = '{% url 'index' %}';" type="button"
-                            class="btn btn-outline-primary">LOG IN
-                    </button>
-                </div>
-            </div>
-        </div>
-    </div>
+    {#    <div class="row">#}
+    {##}
+    {#        <div class="row me-1 my-3">#}
+    {#            <div class="col-2">#}
+    {#            </div>#}
+    {#            <div class="col-10">#}
+    {#                <button onclick="window.location.href = '{% url 'index' %}';" type="button"#}
+    {#                        class="btn btn-outline-primary">LOG IN#}
+    {#                </button>#}
+    {#            </div>#}
+    {#        </div>#}
+    {#    </div>#}
 
 {% endblock %}

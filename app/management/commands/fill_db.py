@@ -1,4 +1,4 @@
-from app.models import Profile, Question, Answer, Tag, AnswerLike, QuestionLike
+from app.models import Profile, Question, Answer, Tag, AnswerLike, QuestionLike, User
 
 from django.core.management.base import BaseCommand, CommandError
 from django.db import transaction
@@ -22,13 +22,20 @@ class Command(BaseCommand):
 
     @transaction.atomic
     def handle(self, *args, **options):
-        models = [Profile, Question, Answer, Tag, AnswerLike, QuestionLike]
+        models = [Profile, Question, Answer, Tag, AnswerLike, QuestionLike, User]
         for m in models:
             m.objects.all().delete()
 
         ratio = options['ratio']
 
-        profiles = Profile.objects.bulk_create(ProfileFactory() for _ in range(ratio))
+        users = []
+        for i in range(ratio):
+            user = User(username=f'username{i}')
+            user.set_password('tr12345')
+            users.append(user)
+        User.objects.bulk_create(users)
+
+        profiles = Profile.objects.bulk_create(ProfileFactory(user=users[i]) for i in range(ratio))
 
         tags = Tag.objects.bulk_create(TagFactory() for _ in range(ratio))
 
