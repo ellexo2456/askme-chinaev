@@ -43,7 +43,7 @@
 
         </div>
 
-        {% if is_auth %}
+        {% if request.user.is_authenticated %}
 
             <div class="profile">
                 <div>
@@ -54,11 +54,13 @@
                 </div>
                 <div class="profile-info">
                     <div>
-                        Mr. Kotik
+                        {{ request.user.username }}
                     </div>
                     <div class="list">
-                        <a href="{% url 'settings' %}">settings</a>
-                        <a href="{% url 'index' %}">log out</a>
+                        <a class="link-primary" href="{% url 'settings' %}"> Settings </a>
+                        <form method="get" action="#">
+                            <a href="{% url 'logout' %}" class="link-primary">Log out</a>
+                        </form>
                     </div>
                 </div>
             </div>
@@ -85,7 +87,7 @@
             </div>
             <div class="col-4 mt-4">
                 <h2 class="me-2">Popular Tags</h2>
-            <div class="d-flex-inline flex-wrap mb-3"></span>
+                <div class="d-flex-inline flex-wrap mb-3"></span>
                     <span class="badge bg-secondary m-1">Some tag</span>
                     <span class="badge bg-warning m-1">Some tag</span>
                     <span class="badge bg-secondary m-1">Some tag</span>

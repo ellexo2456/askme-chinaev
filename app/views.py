@@ -24,11 +24,11 @@ def get_paginator(request, page_items):
     return paginator.get_page(page_number)
 
 
-@login_required(login_url="login")
+@login_required(login_url="login", redirect_field_name=settings.REDIRECT_FIELD_NAME)
 def index(request):
     # context = {'is_auth': False,
     #            'page_obj': get_paginator(request, models.get_questions(models.new_questions))}
-    context = {'is_auth': False,
+    context = {'is_auth': True,
                'page_obj': get_paginator(request, models.Question.objects.order_by_date())}
 
     if request.GET.get('page') and int(request.GET.get('page')) > context['page_obj'].paginator.num_pages:
@@ -106,6 +106,10 @@ def login(request):
 
     return render(request, "login.html", context=context)
 
+
+def logout(request):
+    auth.logout(request)
+    return redirect(request.META['HTTP_REFERER'])
 
 
 def register(request):
