@@ -87,24 +87,17 @@
             <div class="col-4 mt-4">
                 <h2 class="me-2">Popular Tags</h2>
                 <div class="d-flex-inline flex-wrap mb-3"></span>
-                    <span class="badge bg-secondary m-1">Some tag</span>
-                    <span class="badge bg-warning m-1">Some tag</span>
-                    <span class="badge bg-secondary m-1">Some tag</span>
-                    <span class="badge bg-danger fs-6 w-50 p-2 m-1">Some big tag</span>
-                    <span class="badge bg-secondary m-1">Some tag</span>
-                    <span class="badge bg-secondary m-1">Some tag</span>
-                    <span class="badge bg-success m-1">Some green tag</span>
+                    {% for tag in best_items.tags %}
+                        <a href="{% url 'tag' tag_name=tag.name %}" class="tag">{{ tag.name }} </a>
+                    {% endfor %}
                 </div>
                 <h2>Best Members</h2>
                 <div class="d-flex flex-column flex-wrap">
-                    <a class="mb-2">Some member</a>
-                    <a class="mb-2">Some member</a>
-                    <a class="mb-2">Some member</a>
-                    <a class="mb-2">Some member</a>
-                    <a class="mb-2">Some member</a>
-                    <a class="mb-2">Some member</a>
-                    <a class="mb-2">Some member</a>
-                    <a class="mb-2">Some member</a>
+                    {% for profile in best_items.profiles %}
+                        <div class="m-1">
+                            <a href="#" class="member-miniature"> {{ profile.user.username }} </a>
+                        </div>
+                    {% endfor %}
                 </div>
             </div>
         </div>

@@ -1,5 +1,12 @@
 from django.db import models
 from django.contrib.auth.models import User
+from django.db.models import Count
+
+
+class ProfileManager(models.Manager):
+    def get_best_profiles(self):
+        p_sort_by_questions = self.annotate(Count('question')).order_by('-question__count')
+        return p_sort_by_questions
 
 
 # user's pass: tr12345
@@ -8,6 +15,8 @@ class Profile(models.Model):
                                null=True,
                                blank=True)
     user = models.OneToOneField(User, on_delete=models.CASCADE, null=False)
+
+    objects = ProfileManager()
 
 
 class TagManager(models.Manager):
@@ -42,8 +51,8 @@ class Question(models.Model):
     ask_date = models.DateTimeField(auto_now_add=True)
     profile = models.ForeignKey(to=Profile, on_delete=models.CASCADE)
     tags = models.ManyToManyField(to=Tag)
-    answers_count = models.IntegerField(default=0) #
-    rating = models.IntegerField(default=0) #
+    answers_count = models.IntegerField(default=0)  #
+    rating = models.IntegerField(default=0)  #
 
     objects = QuestionManager()
 

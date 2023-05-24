@@ -63,3 +63,24 @@
     border: 2px;
     /*overflow: hidden;*/
 }
+
+.member-miniature {
+    /* padding-top: 60px; */
+    color: black;
+    text-decoration: none;
+}
+
+.member-miniature:hover {
+    color: black;
+}
+
+.tag {
+    background-color:antiquewhite;
+    color:gray;
+    border-radius: 30px;
+    padding: 4px 14px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    margin: 2px;
+}

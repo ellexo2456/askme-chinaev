@@ -14,6 +14,7 @@ from django.contrib import auth
 from . import models
 from askme import settings
 
+COUNT_BEST_ITEMS = 10
 ITEMS_COUNT_ON_PAGE = 10
 
 
@@ -42,11 +43,17 @@ def get_num_page_by_id(paginator, id):
     return None
 
 
+def get_best_items():
+    return {
+        'tags': models.Tag.objects.order_by_popular()[:COUNT_BEST_ITEMS],
+        'profiles': models.Profile.objects.get_best_profiles()[:COUNT_BEST_ITEMS]
+    }
+
+
 def index(request):
-    # context = {'is_auth': False,
-    #            'page_obj': get_paginator(request, models.get_questions(models.new_questions))}
     context = {'is_auth': True,
-               'page_obj': paginate(request, models.Question.objects.order_by_date())}
+               'page_obj': paginate(request, models.Question.objects.order_by_date()),
+               'best_items': get_best_items()}
 
     if request.GET.get('page') and int(request.GET.get('page')) > context['page_obj'].paginator.num_pages:
         return HttpResponseNotFound()
@@ -73,26 +80,27 @@ def question(request, question_id: int):
 
             answer.question = needed_question
             answer.save()
-            answer_id = answer.id
 
-            # дублирование, т.к. при GET запросе новый ответ не добавляется
-            # answers = needed_question.answer_set.all().order_by('date')
             answers = needed_question.answers.order_by('-rating')
             page = paginate(request, answers)
 
-            # получаем номер страницы, на которой разместился новый вопрос
+            answer_id = answer.id
             num_page = get_num_page_by_id(page.paginator, answer_id)
             # скроллинг по якорю: <div id="{{answer_id"}}"> </div>
             return redirect(reverse("question", args=[question_id]) + f'?page={num_page}#{answer_id}')
 
     answers = needed_question.answers.order_by('-rating')
     page = paginate(request, answers)
-    context = {'page_obj': page, 'question': needed_question, 'form': answer_form}
+    context = {'page_obj': page,
+               'question': needed_question,
+               'form': answer_form,
+               'best_items': get_best_items()}
     return render(request, "question.html", context=context)
 
 
 def hot(request):
-    context = {'page_obj': paginate(request, models.Question.objects.order_by_rating())}
+    context = {'page_obj': paginate(request, models.Question.objects.order_by_rating()),
+               'best_items': get_best_items()}
 
     if request.GET.get('page') and int(request.GET.get('page')) > context['page_obj'].paginator.num_pages:
         return HttpResponseNotFound()
@@ -106,7 +114,8 @@ def tag(request, tag_name: str):
         return HttpResponseNotFound()
 
     context = {'page_obj': paginate(request, models.Question.objects.get_by_tag(tag_name)),
-               'tag_name': tag_name}
+               'tag_name': tag_name,
+               'best_items': get_best_items()}
     return render(request, "tag.html", context=context)
 
 
@@ -124,7 +133,7 @@ def ask(request):
             add_tags_to_question(ask_form.cleaned_data['tag_list'], question)
             return redirect(reverse("question", args=[question.id]))
 
-    context = {'form': ask_form}
+    context = {'form': ask_form, 'best_items': get_best_items()}
     return render(request, "ask.html", context=context)
 
 
@@ -156,7 +165,7 @@ def login(request):
             else:
                 login_form.add_error(None, "Username or password is incorrect")
     # context = {'best_items': get_best_items(), 'form': login_form}
-    context = {'form': login_form}
+    context = {'form': login_form, 'best_items': get_best_items()}
 
     return render(request, "login.html", context=context)
 
@@ -180,7 +189,7 @@ def register(request):
                 return redirect(reverse(viewname="index"))
             else:
                 reg_form.add_error(None, "User saving error")
-    context = {'form': reg_form}
+    context = {'form': reg_form, 'best_items': get_best_items()}
     return render(request, "register.html", context=context)
 
 
@@ -195,5 +204,5 @@ def settings(request):
         if user_form.is_valid():
             user_form.save()
             return redirect(reverse("settings"))
-    context = {'form': user_form}
+    context = {'form': user_form, 'best_items': get_best_items()}
     return render(request, "settings.html", context=context)
