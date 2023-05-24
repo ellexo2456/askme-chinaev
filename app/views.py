@@ -17,19 +17,36 @@ from askme import settings
 ITEMS_COUNT_ON_PAGE = 10
 
 
-def get_paginator(request, page_items):
-    paginator = Paginator(page_items, ITEMS_COUNT_ON_PAGE)
+def add_tags_to_question(tags, question):
+    for tag_name in tags.split(','):
+        tag = models.Tag(name=tag_name)
+        try:
+            tag.save()
+            question.tags.add(tag)
+        except IntegrityError:
+            pass
 
+
+def paginate(request, page_items):
+    paginator = Paginator(page_items, ITEMS_COUNT_ON_PAGE)
     page_number = request.GET.get('page')
     return paginator.get_page(page_number)
 
 
-@login_required(login_url="login", redirect_field_name=settings.REDIRECT_FIELD_NAME)
+def get_num_page_by_id(paginator, id):
+    for i in paginator.page_range:
+        entities = paginator.page(i).object_list
+        for entity in entities.all():
+            if entity.id == id:
+                return i
+    return None
+
+
 def index(request):
     # context = {'is_auth': False,
     #            'page_obj': get_paginator(request, models.get_questions(models.new_questions))}
     context = {'is_auth': True,
-               'page_obj': get_paginator(request, models.Question.objects.order_by_date())}
+               'page_obj': paginate(request, models.Question.objects.order_by_date())}
 
     if request.GET.get('page') and int(request.GET.get('page')) > context['page_obj'].paginator.num_pages:
         return HttpResponseNotFound()
@@ -37,21 +54,45 @@ def index(request):
 
 
 def question(request, question_id: int):
-    if (not models.Question.objects.filter(id=question_id).exists()) or question_id < 0:
-        return HttpResponseNotFound()
+    needed_question = models.Question.objects.filter(pk=question_id).first()
 
-    try:
-        question_item = models.Question.objects.get_by_id(question_id)
-        context = {'question': question_item,
-                   'page_obj': get_paginator(request, models.Answer.objects.get_answers(question_item))}
-    except (models.Question.DoesNotExist, models.Question.MultipleObjectsReturned):
-        return HttpResponseNotFound()
+    if not needed_question:
+        return HttpResponseNotFound('<h1>Page not found</h1>')
 
-    return render(request, 'question.html', context=context)
+    if request.method == 'GET':
+        answer_form = forms.AnswerForm()
+    elif request.method == 'POST':
+        if not request.user.is_authenticated:
+            return redirect("login")
+        answer_form = forms.AnswerForm(request.POST)
+        if answer_form.is_valid():
+            answer = answer_form.save(commit=False)
+
+            user = models.User.objects.get(username=request.user)
+            answer.profile = models.Profile.objects.get(user=user)
+
+            answer.question = needed_question
+            answer.save()
+            answer_id = answer.id
+
+            # дублирование, т.к. при GET запросе новый ответ не добавляется
+            # answers = needed_question.answer_set.all().order_by('date')
+            answers = needed_question.answers.order_by('-rating')
+            page = paginate(request, answers)
+
+            # получаем номер страницы, на которой разместился новый вопрос
+            num_page = get_num_page_by_id(page.paginator, answer_id)
+            # скроллинг по якорю: <div id="{{answer_id"}}"> </div>
+            return redirect(reverse("question", args=[question_id]) + f'?page={num_page}#{answer_id}')
+
+    answers = needed_question.answers.order_by('-rating')
+    page = paginate(request, answers)
+    context = {'page_obj': page, 'question': needed_question, 'form': answer_form}
+    return render(request, "question.html", context=context)
 
 
 def hot(request):
-    context = {'page_obj': get_paginator(request, models.Question.objects.order_by_rating())}
+    context = {'page_obj': paginate(request, models.Question.objects.order_by_rating())}
 
     if request.GET.get('page') and int(request.GET.get('page')) > context['page_obj'].paginator.num_pages:
         return HttpResponseNotFound()
@@ -64,14 +105,27 @@ def tag(request, tag_name: str):
     if not current_tag.exists():
         return HttpResponseNotFound()
 
-    context = {'page_obj': get_paginator(request, models.Question.objects.get_by_tag(tag_name)),
+    context = {'page_obj': paginate(request, models.Question.objects.get_by_tag(tag_name)),
                'tag_name': tag_name}
     return render(request, "tag.html", context=context)
 
 
 @login_required(login_url="login", redirect_field_name=settings.REDIRECT_FIELD_NAME)
 def ask(request):
-    return render(request, 'ask.html')
+    if request.method == 'GET':
+        ask_form = forms.AskForm()
+    elif request.method == 'POST':
+        ask_form = forms.AskForm(request.POST)
+        if ask_form.is_valid():
+            question = ask_form.save(commit=False)
+            user = models.User.objects.get(username=request.user)
+            question.profile = models.Profile.objects.get(user=user)
+            question.save()
+            add_tags_to_question(ask_form.cleaned_data['tag_list'], question)
+            return redirect(reverse("question", args=[question.id]))
+
+    context = {'form': ask_form}
+    return render(request, "ask.html", context=context)
 
 
 # def login(request):
@@ -113,9 +167,33 @@ def logout(request):
 
 
 def register(request):
-    return render(request, 'register.html')
+    if request.method == 'GET':
+        reg_form = forms.RegistrationForm()
+    elif request.method == 'POST':
+        reg_form = forms.RegistrationForm(data=request.POST, files=request.FILES)
+        if reg_form.is_valid():
+            user = reg_form.save()
+            if user:
+                # avatar = None ?
+                auth.login(request, user)
+                models.Profile.objects.create(user=user, avatar=reg_form.cleaned_data['avatar'])
+                return redirect(reverse(viewname="index"))
+            else:
+                reg_form.add_error(None, "User saving error")
+    context = {'form': reg_form}
+    return render(request, "register.html", context=context)
 
 
 @login_required(login_url="login", redirect_field_name=settings.REDIRECT_FIELD_NAME)
 def settings(request):
-    return render(request, 'settings.html')
+    if request.method == 'GET':
+        dict_model_fields = model_to_dict(request.user)
+        # инициализация формы существующими значениями
+        user_form = forms.SettingsForm(initial=dict_model_fields)
+    elif request.method == 'POST':
+        user_form = forms.SettingsForm(data=request.POST, instance=request.user)
+        if user_form.is_valid():
+            user_form.save()
+            return redirect(reverse("settings"))
+    context = {'form': user_form}
+    return render(request, "settings.html", context=context)

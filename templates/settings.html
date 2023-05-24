@@ -1,49 +1,21 @@
 {% extends 'inc/base.html' %}
 
 {% load static %}
+{% load bootstrap5 %}
+{% bootstrap_messages %}
 
 {% block content %}
-
     <div class="header">
-        <h1>Settings: Mr. Kotik</h1>
+        <h1>Settings: {{ request.user.username }}</h1>
     </div>
-    <div class="alert alert-danger mt-2" role="alert">
-        Sorry, this email already exist!
-    </div>
-    <div class="row me-1 mb-3">
-             <label for="login" class="col-3 col-form-label">Login</label>
-             <div class="col">
-                 <input type="email" class="col-form-control" id="login" placeholder="Login">
-             </div>
-    </div>
-    <div class="row me-1 mb-3">
-             <label for="email" class="col-3 col-form-label">Email</label>
-             <div class="col">
-                 <input type="email" class="col-form-control" id="email" placeholder="email@mail.ru">
-             </div>
-    </div>
-    <div class="row me-1 mb-3">
-             <label for="nickName" class="col-3 col-form-label">Nick Name</label>
-             <div class="col">
-                 <input type="email" class="col-form-control" id="nickName" placeholder="Name">
-             </div>
-    </div>
-    <div class="row me-1 mb-4">
-        <label for="uploadAvatar" class="col-form-label col-3">Upload avatar</label>
-        <div class="col d-flex-inline">
-            <img src={% static '' %} alt="avatar" width="120" height="120" class="my-3 border border-dark rounded d-flex-inline">
-            <div>
-                <input class="col-form-control" type="file" id="uploadAvatar">
-            </div>
-        </div>
-    </div>
-    <div class="row me-1 my-3">
-        <div class="col-3">
-        </div>
-        <div class="col">
-            <button onclick="window.location.href = '{% url 'index' %}';" type="button" class="btn btn-outline-primary">SAVE</button>
-        </div>
-    </div>
+
+    <form action="{% url 'settings' %}" method="post" class="form">
+        {% csrf_token %}
+        {% bootstrap_form form %}
+        {% buttons %}
+            <button type="submit" class="my-3 btn btn-primary">Save</button>
+        {% endbuttons %}
+    </form>
 
 {% endblock %}
 

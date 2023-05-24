@@ -1,61 +1,71 @@
 {% extends 'inc/base.html' %}
 
 {% load static %}
+{% load bootstrap5 %}
+{% bootstrap_messages %}
 
 {% block content %}
 
-        <div class="header">
-            <h1>Registration</h1>
-        </div>
+    <div class="header">
+        <h1>Registration</h1>
+    </div>
 
-        <div class="row">
+    <form action="{% url 'register' %}" method="post" class="form">
+        {% csrf_token %}
+        {% bootstrap_form form %}
+        {% buttons %}
+            <button type="submit" class="my-3 btn btn-primary">Register</button>
+        {% endbuttons %}
+    </form>
 
-            <div class="col-8">
-                <div class="alert alert-danger" role="alert">
-                    Sorry, this email already exist!
-                </div>
-                <div class="row me-1 mb-3">
-                         <label for="login" class="col-3 col-form-label">Login</label>
-                         <div class="col">
-                             <input type="email" class="col-form-control" id="login" placeholder="Login">
-                         </div>
-                </div>
-                <div class="row me-1 mb-3">
-                         <label for="email" class="col-3 col-form-label">Email</label>
-                         <div class="col">
-                             <input type="email" class="col-form-control" id="email" placeholder="email@mail.ru">
-                         </div>
-                </div><div class="row me-1 mb-3">
-                         <label for="nickName" class="col-3 col-form-label">Nick Name</label>
-                         <div class="col">
-                             <input type="email" class="col-form-control" id="nickName" placeholder="Name">
-                         </div>
-                </div>
-                <div class="row me-1 mb-3">
-                         <label for="password" class="col-3 col-form-label">Password</label>
-                         <div class="col">
-                             <input type="password" class="col-form-control" id="password" placeholder="············">
-                         </div>
-                </div>
-                <div class="row me-1 mb-3">
-                         <label for="repeatPassword" class="col-3 col-form-label">Repeat Password</label>
-                         <div class="col">
-                             <input type="password" class="col-form-control" id="repeatPassword" placeholder="············">
-                         </div>
-                </div>
-                <div class="row me-1 mb-4">
-                    <label for="uploadAvatar" class="col-form-label col-3">Upload avatar</label>
-                    <input class="col-form-control col" type="file" id="uploadAvatar">
-                </div>
-                <div class="row me-1 my-3">
-                    <div class="col-3">
-                    </div>
-                    <div class="col">
-                        <button onclick="window.location.href = {% url 'index' %};" type="button" class="btn btn-outline-primary">REGISTER</button>
-                    </div>
-                </div>
-            </div>
-        </div>
+    {#        <div class="row">#}
+    {##}
+    {#            <div class="col-8">#}
+    {#                <div class="alert alert-danger" role="alert">#}
+    {#                    Sorry, this email already exist!#}
+    {#                </div>#}
+    {#                <div class="row me-1 mb-3">#}
+    {#                         <label for="login" class="col-3 col-form-label">Login</label>#}
+    {#                         <div class="col">#}
+    {#                             <input type="email" class="col-form-control" id="login" placeholder="Login">#}
+    {#                         </div>#}
+    {#                </div>#}
+    {#                <div class="row me-1 mb-3">#}
+    {#                         <label for="email" class="col-3 col-form-label">Email</label>#}
+    {#                         <div class="col">#}
+    {#                             <input type="email" class="col-form-control" id="email" placeholder="email@mail.ru">#}
+    {#                         </div>#}
+    {#                </div><div class="row me-1 mb-3">#}
+    {#                         <label for="nickName" class="col-3 col-form-label">Nick Name</label>#}
+    {#                         <div class="col">#}
+    {#                             <input type="email" class="col-form-control" id="nickName" placeholder="Name">#}
+    {#                         </div>#}
+    {#                </div>#}
+    {#                <div class="row me-1 mb-3">#}
+    {#                         <label for="password" class="col-3 col-form-label">Password</label>#}
+    {#                         <div class="col">#}
+    {#                             <input type="password" class="col-form-control" id="password" placeholder="············">#}
+    {#                         </div>#}
+    {#                </div>#}
+    {#                <div class="row me-1 mb-3">#}
+    {#                         <label for="repeatPassword" class="col-3 col-form-label">Repeat Password</label>#}
+    {#                         <div class="col">#}
+    {#                             <input type="password" class="col-form-control" id="repeatPassword" placeholder="············">#}
+    {#                         </div>#}
+    {#                </div>#}
+    {#                <div class="row me-1 mb-4">#}
+    {#                    <label for="uploadAvatar" class="col-form-label col-3">Upload avatar</label>#}
+    {#                    <input class="col-form-control col" type="file" id="uploadAvatar">#}
+    {#                </div>#}
+    {#                <div class="row me-1 my-3">#}
+    {#                    <div class="col-3">#}
+    {#                    </div>#}
+    {#                    <div class="col">#}
+    {#                        <button onclick="window.location.href = {% url 'index' %};" type="button" class="btn btn-outline-primary">REGISTER</button>#}
+    {#                    </div>#}
+    {#                </div>#}
+    {#            </div>#}
+    {#        </div>#}
 
 {% endblock %}
 

@@ -1,57 +1,67 @@
 {% extends 'inc/base.html' %}
 
 {% load static %}
+{% load bootstrap5 %}
+{% bootstrap_messages %}
 
 {% block content %}
 
-        <div class="mt-2 mb-4">
-            <div class="row">
-                <div class="col-2">
-                    <div class="avatar">
-                        <img src='{{ question.profile.avatar.url }}' alt="" />
-                    </div>
-                </div>
-                <div class="col-10">
-                    <h2 class="question-title">
-                        {{ question.title }}
-                    </h2>
-                    <div class="question-text">
-                        {{ question.text }}
-                    </div>
+    <div class="mt-2 mb-4">
+        <div class="row">
+            <div class="col-2">
+                <div class="avatar">
+                    <img src='{{ question.profile.avatar.url }}' alt=""/>
                 </div>
             </div>
-            <div>
-                 <div class="row mt-1">
-                     <div class="col-2">
-                        <img src={% static 'img/caret-up-fill.svg' %} alt="" />
-                        <img src={% static 'img/caret-down-fill.svg' %} alt="" />
-                        {{ question.rating }}
-                     </div>
-                     <div class="col-5">
-                        Tag:
-                         {% for tag in question.tags.all %}
-                             <a href={% url 'tag' tag_name=tag.name %}> {{ tag.name }}</a>
-                         {% endfor %}
-                     </div>
-                 </div>
+            <div class="col-10">
+                <h2 class="question-title">
+                    {{ question.title }}
+                </h2>
+                <div class="question-text">
+                    {{ question.text }}
+                </div>
             </div>
         </div>
-
-        <hr>
-
-        {% for answer in page_obj %}
-            {% include "inc/answer_item.html" %}
-        {% endfor %}
-
-        {% include 'inc/paginator.html' %}
-
-        <hr>
-
         <div>
-            <textarea class="col-11 form-control-horizontal" id="TextareaText" rows="3" placeholder="enter your answer here..." style="height: 100px"></textarea>
+            <div class="row mt-1">
+                <div class="col-2">
+                    <img src={% static 'img/caret-up-fill.svg' %} alt=""/>
+                    <img src={% static 'img/caret-down-fill.svg' %} alt=""/>
+                    {{ question.rating }}
+                </div>
+                <div class="col-5">
+                    Tag:
+                    {% for tag in question.tags.all %}
+                        <a href={% url 'tag' tag_name=tag.name %}> {{ tag.name }}</a>
+                    {% endfor %}
+                </div>
+            </div>
         </div>
-        <div class=" me-1 my-3">
-            <button type="button" class="btn btn-outline-primary">ANSWER</button>
-        </div>
+    </div>
+
+    <hr>
+
+    {% for answer in page_obj %}
+        {% include "inc/answer_item.html" %}
+    {% endfor %}
+
+    {% include 'inc/paginator.html' %}
+
+    <hr>
+
+    {% if request.user.is_authenticated %}
+        <form action="{% url 'question' question_id=question.id %}" method="post" class="form">
+            {% csrf_token %}
+            {% bootstrap_form form %}
+            {% buttons %}
+                <button type="submit" class="btn btn-primary mb-3 ps-5 pe-5">Answer</button>
+            {% endbuttons %}
+        </form>
+
+    {% else %}
+        <a href="{% url "login" %}?continue={{ request.path }}" class="btn btn-outline-warning"> Войдите в систему для
+            отправки ответа </a>
+    {% endif %}
+
 
 {% endblock %}

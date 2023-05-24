@@ -68,8 +68,7 @@
         {% else %}
 
             <div class="profile">
-                <a href="{% url 'login' %}" class="me-3"> login </a>
-                <a href="{% url 'register' %}"> register </a>
+                <a href="{% url 'login' %}?continue={{ request.path }}" class="link-primary fs-6 px-2">Log in</a>
             </div>
 
         {% endif %}

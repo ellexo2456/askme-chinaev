@@ -130,7 +130,7 @@ STATICFILES_DIRS = [
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-MEDIA_ROOT = '/Users/aleksej/Projects/askme_chinaev/static/img'
-MEDIA_URL = 'img/'
+MEDIA_ROOT = BASE_DIR / 'media'
+MEDIA_URL = '/media/'
 
 REDIRECT_FIELD_NAME = "continue"
